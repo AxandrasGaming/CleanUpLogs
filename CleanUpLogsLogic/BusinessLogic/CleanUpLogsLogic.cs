@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace CleanUpLogs.Logic.BusinessLogic
 {
@@ -25,39 +26,41 @@ namespace CleanUpLogs.Logic.BusinessLogic
       for (int posLines = 0; posLines < lines.Length; posLines++)
       {
         string line = lines[posLines];
-        if (IsValidToDelete(line))
-          lines[posLines] = DeleteStringFromLine(line, $@"\b\u001b[K");
+
+        line = DeleteStringFromBeginning(line);
+
+        while (IsValidToDelete(line))
+        {
+          string deleteStringFlag = "\b\u001b[K";
+          int startPos = line.IndexOf(deleteStringFlag);
+          if (startPos < 0)
+            break;
+          char charToDelete = line[startPos - 1];
+          string stringToDelete = charToDelete + deleteStringFlag;
+          line = DeleteStringFromLine(line, stringToDelete);
+        }
+        lines[posLines] = line;
       }
       return lines;
     }
 
+    private string DeleteStringFromBeginning(string line)
+    {
+      Regex reg = new Regex("\\u001b]0;(.*)~\\a");
+      if (!reg.IsMatch(line))
+        return line;
+      string[] split = reg.Split(line);
+      return split[2];
+    }
+
     private string DeleteStringFromLine(string line, string delString)
     {
-      int startPos = line.IndexOf(delString);
-      return line.Remove(startPos - 1, delString.Length + 1);
+      return line.Replace(delString, "");
     }
 
     private bool IsValidToDelete(string line)
     {
-      return line.Contains('\b') && line.Contains('\u001b') && line.Contains('[') && line.Contains('K');
-    }
-
-    public string DeleteCharFromLine(string line, char delChar)
-    {
-      int lineLength = line.Length;
-      int deletedChars = 0;
-      for (int posCharacter = 0; posCharacter < lineLength; posCharacter++)
-      {
-        int pos = posCharacter - deletedChars;
-        char d = line[pos];
-
-        if (d == delChar)
-        {
-          deletedChars++;
-          line = line.Remove(pos, 1);
-        }
-      }
-      return line;
+      return line.Contains($"\b\u001b[K") || line.Contains($@"\b\u001b[K");
     }
   }
 }

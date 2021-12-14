@@ -27,29 +27,51 @@ namespace CleanUpLogs.Logic.Tests.BusinessLogic
       );
     }
 
-    [TestCase(new string[] { "Grinze ist toll", "Dem Inker fällt was auf" },
-              new string[] { "Grnze st toll", "Dem Inker fällt was auf" })]
-    public void AlterLines_DeleteChar_True(string[] lines, string[] expected)
+    [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log",
+              new string[] { @"[kurs@localhost ~]$ sudo su -" })]
+    public void AlterLines_DeleteMultipleSpecificChar_True(string path, string[] expected)
     {
-      int i = 0;
-      foreach (string line in lines)
-      {
-        char delChar = 'i';
-        string result = _cull.DeleteCharFromLine(line, delChar);
-        StringAssert.AreEqualIgnoringCase(expected[i++], result);
-      }
-    }
+      _cull.ReadContentOfFile(path);
 
-
-    [TestCase(new string[] { @"# ls -lisah[K[K[K[Ka" },
-              new string[] { @"# ls -la" })]
-    public void AlterLines_DeleteSpecificChar_True(string[] lines, string[] expected)
-    {
+      string[] lines = _cull.Lines;
       string[] result = _cull.AlterLines(lines);
       string expectedString = expected[0];
-      string resultString = result[0];
+      string resultString = result[2];
+      Assert.AreEqual(expectedString, resultString);
+    }
+
+    [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log",
+              new string[] { "[kurs@localhost ~]$ sudo su -" })]
+    public void AlterLines_DeleteLineBeginning_True(string path, string[] expected)
+    {
+      // From \u001b to ~\a
+
+      _cull.ReadContentOfFile(path);
+
+      string[] lines = _cull.Lines;
+      string[] result = _cull.AlterLines(lines);
+      string expectedString = expected[0];
+      string resultString = result[2];
       StringAssert.AreEqualIgnoringCase(expectedString, resultString);
     }
+
+    [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log",
+          new string[] { "[kurs@localhost ~]$ sudo su -", "[root@localhost ~]# # ls -la" })]
+    public void AlterLines_DeleteMultipleLineBeginnings_True(string path, string[] expected)
+    {
+      // From \u001b to ~\a
+
+      _cull.ReadContentOfFile(path);
+
+      string[] lines = _cull.Lines;
+      string[] result = _cull.AlterLines(lines);
+
+      StringAssert.AreEqualIgnoringCase(expected[0], result[2]);
+      StringAssert.AreEqualIgnoringCase(expected[1], result[4]);
+    }
+
+
+
 
     [TearDown]
     public void TearDown()
