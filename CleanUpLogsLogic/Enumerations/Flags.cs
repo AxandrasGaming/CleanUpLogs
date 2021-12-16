@@ -1,4 +1,4 @@
-﻿namespace CleanUpLogs.Logic
+﻿namespace CleanUpLogs.Console
 {
   public enum Flags
   {

@@ -40,15 +40,5 @@ namespace CleanUpLogs.Console.Test
       Assert.AreEqual("C:\\path", _culc.FlagCollection[0]);
     }
 
-    [TestCase(@"..\netcoreapp3.1\Resources\testdatei.txt", false)]
-    [TestCase(@"..\netcoreapp3.1\Resources\testdatei.LOG", false)]
-    [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log", true)]
-    public void IsValidPath_PathIncorrectFileExtension_False(string path, bool expected)
-    {
-      _culc = new CleanUpLogsConsole();
-      bool result = _culc.IsValidPath(path);
-
-      Assert.AreEqual(expected, result);
-    }
   }
 }

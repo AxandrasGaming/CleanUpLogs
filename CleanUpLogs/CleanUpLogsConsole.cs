@@ -1,4 +1,5 @@
-﻿using CleanUpLogs.Logic.BusinessLogic;
+﻿using CleanUpLogs.Console.BusinessLogic;
+using CleanUpLogs.Console.Helper;
 using System.Collections.Generic;
 
 namespace CleanUpLogs.Console
@@ -9,6 +10,7 @@ namespace CleanUpLogs.Console
     private string[] _args = null;
     private Dictionary<Flags, string> _flags = new Dictionary<Flags, string>();
     private CleanUpLogsLogic _cleanUpLogsLogic = new CleanUpLogsLogic();
+    private IExtensionManager _fileExtensionManager;
     #endregion
 
     #region Properties
@@ -22,6 +24,8 @@ namespace CleanUpLogs.Console
     public CleanUpLogsConsole(string[] args)
     {
       Args = args;
+      ExtensionManagerFactory emf = new ExtensionManagerFactory();
+      _fileExtensionManager = emf.Create();
       StartLogCleaning();
     }
 
@@ -36,16 +40,9 @@ namespace CleanUpLogs.Console
       if (!FlagCollection.ContainsKey(Flags.Path)) return;
 
       string path = FlagCollection[Flags.Path];
-      if (!IsValidPath(path)) return;
+      if (!_fileExtensionManager.IsValidPath(path)) return;
 
       _cleanUpLogsLogic.ReadContentOfFile(path);
-    }
-
-    public bool IsValidPath(string path)
-    {
-      if (string.IsNullOrEmpty(path) || !path.Contains(".log"))
-        return false;
-      return true;
     }
 
     private void InitializeFlagCollection()

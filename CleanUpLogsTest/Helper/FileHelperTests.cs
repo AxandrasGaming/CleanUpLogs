@@ -1,8 +1,8 @@
-using CleanUpLogs.Logic.Helper;
+using CleanUpLogs.Console.Helper;
 using NUnit.Framework;
 using System.IO;
 
-namespace CleanUpLogsLogicTests
+namespace CleanUpLogs.Console.Tests
 {
   public class FileHelperTests
   {

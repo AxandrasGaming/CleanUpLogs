@@ -1,7 +1,4 @@
 ﻿using CleanUpLogs.Console.Helper;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace CleanUpLogs.Console.BusinessLogic
@@ -12,10 +9,7 @@ namespace CleanUpLogs.Console.BusinessLogic
 
     public string[] Lines { get => _lines; set => _lines = value; }
 
-    public CleanUpLogsLogic()
-    {
-
-    }
+    public CleanUpLogsLogic() { }
 
     public void ReadContentOfFile(string path)
     {

@@ -1,7 +1,7 @@
-﻿using CleanUpLogs.Logic.BusinessLogic;
+﻿using CleanUpLogs.Console.BusinessLogic;
 using NUnit.Framework;
 
-namespace CleanUpLogs.Logic.Tests.BusinessLogic
+namespace CleanUpLogs.Console.Tests.BusinessLogic
 {
   class CleanUpLogsLogicTests
   {
