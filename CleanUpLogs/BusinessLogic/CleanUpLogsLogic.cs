@@ -1,4 +1,5 @@
 ﻿using CleanUpLogs.Console.Helper;
+using System;
 using System.Text.RegularExpressions;
 
 namespace CleanUpLogs.Console.BusinessLogic
@@ -55,7 +56,23 @@ namespace CleanUpLogs.Console.BusinessLogic
 
     private bool IsValidToDelete(string line)
     {
-      return line.Contains($"\b\u001b[K") || line.Contains($@"\b\u001b[K");
+      return line.Contains("\u001b[K") || line.Contains($"\b\u001b[K") || line.Contains($@"\b\u001b[K");
+    }
+
+    public bool WriteContentToFiles(string path, string[] lines)
+    {
+      if (string.IsNullOrEmpty(path)) return false;
+      if (lines == null) return false;
+      try
+      {
+        FileHelper.WriteLines(path, lines);
+      }
+      catch (Exception)
+      {
+        return false;
+      }
+
+      return true;
     }
   }
 }

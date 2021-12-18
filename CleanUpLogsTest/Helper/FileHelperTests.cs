@@ -47,7 +47,7 @@ namespace CleanUpLogs.Console.Tests
     [TearDown]
     public void CleanUp()
     {
-      if (Directory.Exists(_tempFileName))
+      if (File.Exists(_tempFileName))
         File.Delete(_tempFileName);
       _tempFileName = string.Empty;
     }
