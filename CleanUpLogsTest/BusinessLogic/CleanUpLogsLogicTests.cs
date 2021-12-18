@@ -90,12 +90,5 @@ namespace CleanUpLogs.Console.Tests.BusinessLogic
 
       Assert.IsFalse(result);
     }
-
-    [TearDown]
-    public void TearDown()
-    {
-      _cull = null;
-    }
-
   }
 }

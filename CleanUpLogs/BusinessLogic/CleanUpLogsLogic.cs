@@ -27,12 +27,46 @@ namespace CleanUpLogs.Console.BusinessLogic
 
         while (IsValidToDelete(line))
         {
-          string deleteStringFlag = "\b\u001b[K";
+          string deleteStringFlag = StringContainsDeletionKeyStroke(line);
           int startPos = line.IndexOf(deleteStringFlag);
-          if (startPos < 0)
+          if (!IsValidStartPositon(startPos))
             break;
-          char charToDelete = line[startPos - 1];
-          string stringToDelete = charToDelete + deleteStringFlag;
+          string stringToDelete = string.Empty;
+          string charactersToDelete = string.Empty;
+          if (startPos - 1 >= 0 && deleteStringFlag.Contains("\b\u001b[K"))
+          {
+            charactersToDelete = line[startPos - 1].ToString();
+            stringToDelete = charactersToDelete + deleteStringFlag;
+          }
+          else if (startPos - 1 >= 0 && deleteStringFlag.Contains("\b"))
+          {
+            charactersToDelete = line[startPos - 1].ToString();
+            stringToDelete = charactersToDelete + deleteStringFlag;
+          }
+          else if (startPos - 1 >= 0 && deleteStringFlag.Contains("\u001b[K"))
+          {
+            charactersToDelete = line[startPos - 1].ToString();
+            stringToDelete = charactersToDelete + deleteStringFlag;
+          }
+          if (startPos == 0 && deleteStringFlag.Contains("\u001b[K"))
+          {
+            stringToDelete = deleteStringFlag;
+          }
+          if (deleteStringFlag.Contains("[0m"))
+          {
+            stringToDelete = deleteStringFlag;
+          }
+          if (deleteStringFlag.Contains("[01"))
+          {
+            int pos = startPos + 4;
+            charactersToDelete = String.Format("{0}{1}{2}{3}",
+                                                line[pos],
+                                                line[pos + 1],
+                                                line[pos + 2],
+                                                line[pos + 3]);
+            stringToDelete = deleteStringFlag + charactersToDelete;
+          }
+
           line = DeleteStringFromLine(line, stringToDelete);
         }
         lines[posLines] = line;
@@ -40,13 +74,38 @@ namespace CleanUpLogs.Console.BusinessLogic
       return lines;
     }
 
+    private static bool IsValidStartPositon(int startPos)
+    {
+      return startPos >= 0;
+    }
+
+    private string StringContainsDeletionKeyStroke(string line)
+    {
+      if (line.Contains("\b\u001b[K")) return "\b\u001b[K";
+      if (line.Contains($"\\b\\u001b[K")) return $"\\b\\u001b[K";
+      if (line.Contains($@"\b\u001b[K")) return $@"\b\u001b[K";
+      if (line.Contains("\b")) return "\b";
+      if (line.Contains("\u001b[K")) return "\u001b[K";
+      if (line.Contains("\u001b[01")) return "\u001b[01";
+      if (line.Contains("\u001b[0m")) return "\u001b[0m";
+
+      string pattern = "\\u001b\\[K(.*)";
+      Regex reg = new Regex(pattern);
+      if (reg.IsMatch(line)) return "\u001b[K";
+      return string.Empty;
+    }
+
     private string DeleteStringFromBeginning(string line)
     {
-      Regex reg = new Regex("\\u001b]0;(.*)~\\a");
-      if (!reg.IsMatch(line))
-        return line;
-      string[] split = reg.Split(line);
-      return split[2];
+      string[] split;
+      string pattern = "\\u001b]0;(.*)~?\\a";
+      Regex reg = new Regex(pattern);
+      if (reg.IsMatch(line))
+      {
+        split = reg.Split(line);
+        return split[2];
+      }
+      return line;
     }
 
     private string DeleteStringFromLine(string line, string delString)
@@ -56,7 +115,15 @@ namespace CleanUpLogs.Console.BusinessLogic
 
     private bool IsValidToDelete(string line)
     {
-      return line.Contains("\u001b[K") || line.Contains($"\b\u001b[K") || line.Contains($@"\b\u001b[K");
+      string pattern = "\\u001b\\[K(.*)";
+      Regex reg = new Regex(pattern);
+      return reg.IsMatch(line)
+        || line.Contains("\b")
+        || line.Contains($"\\b\\u001b[K")
+        || line.Contains($"\\u001b[K")
+        || line.Contains($@"\b\u001b[K")
+        || line.Contains($"\u001b[01")
+        || line.Contains($"\u001b[0m");
     }
 
     public bool WriteContentToFiles(string path, string[] lines)

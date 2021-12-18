@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{2BD1FF70-4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanUpLogs.Console", "CleanUpLogs\CleanUpLogs.Console.csproj", "{7D26752C-1A57-4DD6-8CB2-ABB5464F9DC9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanUpLogs.Console.Logic.Tests", "CleanUpLogs.Logic.Tests\CleanUpLogs.Console.Logic.Tests.csproj", "{30495FEB-8835-496D-B584-3875FF0EA6BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,12 +25,17 @@ Global
 		{7D26752C-1A57-4DD6-8CB2-ABB5464F9DC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D26752C-1A57-4DD6-8CB2-ABB5464F9DC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D26752C-1A57-4DD6-8CB2-ABB5464F9DC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30495FEB-8835-496D-B584-3875FF0EA6BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30495FEB-8835-496D-B584-3875FF0EA6BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30495FEB-8835-496D-B584-3875FF0EA6BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30495FEB-8835-496D-B584-3875FF0EA6BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{65E1CB88-09F9-497C-849D-1EA913F00DD8} = {2BD1FF70-4593-4FA5-BA6A-4B62EA72FFDC}
+		{30495FEB-8835-496D-B584-3875FF0EA6BB} = {2BD1FF70-4593-4FA5-BA6A-4B62EA72FFDC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1B0913E-FC53-47BD-8888-9DDAE5992D7F}
