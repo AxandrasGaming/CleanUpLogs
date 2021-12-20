@@ -8,7 +8,7 @@ namespace CleanUpLogs.Logic.Tests
     // A Test behaves as an ordinary method
     
     [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log", @"..\netcoreapp3.1\Resources\testdatei_SOLL.log", @"..\netcoreapp3.1\Resources\testdatei_IST.log")]
-    //[Ignore("Slow test just for Integration!")]
+    [Ignore("Slow test just for Integration!")]
     public void Integration_WholeCRUDProcess_True(string pathSource, string pathExpected, string pathResult)
     {
       _cull.ReadContentOfFile(pathSource);

@@ -2,7 +2,9 @@
 {
   public enum Flags
   {
-    Path,
+    None,
+    SourcePath,
+    DestinationPath,
     Default
   }
 }

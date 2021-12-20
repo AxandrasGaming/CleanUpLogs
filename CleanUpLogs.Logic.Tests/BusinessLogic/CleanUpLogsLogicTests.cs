@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System.Linq;
 
 namespace CleanUpLogs.Logic.Tests
 {
@@ -30,9 +31,9 @@ namespace CleanUpLogs.Logic.Tests
       _cull.ReadContentOfFile(path);
 
       string[] lines = _cull.Lines;
-      string[] result = _cull.AlterLines(lines);
-      string resultString = result[2];
-      Assert.AreEqual(expected, resultString);
+      string[] resultArray = _cull.AlterLines(lines);
+      string result = resultArray.FirstOrDefault(_ => _ == (expected));
+      StringAssert.AreEqualIgnoringCase(expected, result);
     }
 
     [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log", "[kurs@localhost ~]$ sudo su -")]
@@ -43,9 +44,9 @@ namespace CleanUpLogs.Logic.Tests
       _cull.ReadContentOfFile(path);
 
       string[] lines = _cull.Lines;
-      string[] result = _cull.AlterLines(lines);
-      string resultString = result[2];
-      StringAssert.AreEqualIgnoringCase(expected, resultString);
+      string[] resultArray = _cull.AlterLines(lines);
+      string result = resultArray.FirstOrDefault(_ => _ == (expected));
+      StringAssert.AreEqualIgnoringCase(expected, result);
     }
 
     [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log", "[root@server1 etc]# ls -la")]
@@ -56,9 +57,9 @@ namespace CleanUpLogs.Logic.Tests
       _cull.ReadContentOfFile(path);
 
       string[] lines = _cull.Lines;
-      string[] result = _cull.AlterLines(lines);
-      string resultString = result[43];
-      StringAssert.AreEqualIgnoringCase(expected, resultString);
+      string[] resultArray = _cull.AlterLines(lines);
+      string result = resultArray.FirstOrDefault(_ => _ == (expected));
+      StringAssert.AreEqualIgnoringCase(expected, result);
     }
 
     [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log", "[kurs@localhost ~]$ sudo su -", 2)]
@@ -71,9 +72,9 @@ namespace CleanUpLogs.Logic.Tests
       _cull.ReadContentOfFile(path);
 
       string[] lines = _cull.Lines;
-      string[] result = _cull.AlterLines(lines);
-
-      StringAssert.AreEqualIgnoringCase(expected, result[linePos]);
+      string[] resultArray = _cull.AlterLines(lines);
+      string result = resultArray.FirstOrDefault(_ => _ == expected);
+      StringAssert.AreEqualIgnoringCase(expected, result);
     }
 
     [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log", "[root@localhost ~]# ")]
@@ -83,9 +84,9 @@ namespace CleanUpLogs.Logic.Tests
       _cull.ReadContentOfFile(path);
 
       string[] lines = _cull.Lines;
-      string[] result = _cull.AlterLines(lines);
-
-      StringAssert.AreEqualIgnoringCase(expected, result[7]);
+      string[] resultArray = _cull.AlterLines(lines);
+      string result = resultArray.FirstOrDefault(_ => _ == expected);
+      StringAssert.AreEqualIgnoringCase(expected, result);
     }
 
     [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log", "dr-xr-x---.  5 root root  184  4. Okt 11:29 .")]
@@ -95,9 +96,9 @@ namespace CleanUpLogs.Logic.Tests
       _cull.ReadContentOfFile(path);
 
       string[] lines = _cull.Lines;
-      string[] result = _cull.AlterLines(lines);
-
-      StringAssert.AreEqualIgnoringCase(expected, result[10]);
+      string[] resultArray = _cull.AlterLines(lines);
+      string result = resultArray.FirstOrDefault(_ => _ == (expected));
+      StringAssert.AreEqualIgnoringCase(expected, result);
     }
 
     [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log")]
@@ -105,11 +106,11 @@ namespace CleanUpLogs.Logic.Tests
     {
       // \b
       _cull.ReadContentOfFile(path);
-
+      string expected = "[root@server1 etc]# u\u001b[1P";
       string[] lines = _cull.Lines;
-      string[] result = _cull.AlterLines(lines);
-
-      StringAssert.AreEqualIgnoringCase("[root@server1 etc]# u\u001b[1P", result[52]);
+      string[] resultArray = _cull.AlterLines(lines);
+      string result = resultArray.FirstOrDefault(_ => _ == (expected));
+      StringAssert.AreEqualIgnoringCase(expected, result);
     }
 
 

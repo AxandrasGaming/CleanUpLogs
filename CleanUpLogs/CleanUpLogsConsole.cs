@@ -1,6 +1,7 @@
 ﻿using CleanUpLogs.Console.BusinessLogic;
 using CleanUpLogs.Console.Helper;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace CleanUpLogs.Console
 {
@@ -37,12 +38,19 @@ namespace CleanUpLogs.Console
     {
       if (_args == null) return;
       InitializeFlagCollection();
-      if (!FlagCollection.ContainsKey(Flags.Path)) return;
+      if (FlagCollectionHasValidFlags()) return;
 
-      string path = FlagCollection[Flags.Path];
+      string path = FlagCollection[Flags.SourcePath];
       if (!_fileExtensionManager.IsValidPath(path)) return;
 
       _cleanUpLogsLogic.ReadContentOfFile(path);
+    }
+
+    private bool FlagCollectionHasValidFlags()
+    {
+      return FlagCollection.Keys.Count <= 0
+        || FlagCollection.ContainsKey(Flags.None)
+        || FlagCollection.ContainsKey(Flags.Default);
     }
 
     private void InitializeFlagCollection()
@@ -62,17 +70,21 @@ namespace CleanUpLogs.Console
       if (key == Flags.Default) return;
 
       string value = flag[1];
-
-      FlagCollection.Add(key, value);
+      FlagCollection.TryAdd(key, value);
     }
 
     private Flags GetKeyFromString(string key)
     {
-      switch (key)
-      {
-        case "-f": return Flags.Path;
-        default: return Flags.Default;
-      }
+      string pattern = @"[-]{1}[fF]{1}";
+      Regex reg = new Regex(pattern);
+      if (reg.IsMatch(key))
+        switch (key)
+        {
+          case "-f":
+          case "-F": return Flags.SourcePath;
+          default: return Flags.Default;
+        }
+      return Flags.None;
     }
     #endregion
   }

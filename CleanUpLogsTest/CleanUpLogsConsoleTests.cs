@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace CleanUpLogs.Console.Test
+namespace CleanUpLogs.Console.Tests
 {
   public class CleanUpLogsConsoleTests
   {
@@ -29,15 +29,15 @@ namespace CleanUpLogs.Console.Test
     {
       _culc = new CleanUpLogsConsole(new string[] { "Hallo", "Dieter", "-o=k" });
 
-      Assert.IsFalse(_culc.FlagCollection.ContainsKey(Flags.Default));
+      Assert.IsTrue(_culc.FlagCollection.ContainsKey(Flags.None));
     }
 
     [Test]
-    public void CleanUpLogsConsole_WithParameterPathInCorrectFormat_Test()
+    public void CleanUpLogsConsole_WithParameterPathCorrectFormat_Test()
     {
       _culc = new CleanUpLogsConsole(new string[] { "-f=C:\\path", "Dieter", "-o=k" });
 
-      Assert.AreEqual("C:\\path", _culc.FlagCollection[0]);
+      Assert.AreEqual("C:\\path", _culc.FlagCollection.ContainsKey(Flags.SourcePath) ? _culc.FlagCollection[Flags.SourcePath]:string.Empty);
     }
 
   }
