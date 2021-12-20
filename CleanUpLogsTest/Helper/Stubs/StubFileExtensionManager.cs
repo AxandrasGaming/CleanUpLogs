@@ -1,6 +1,6 @@
 ﻿using CleanUpLogs.Console.Helper;
 
-namespace CleanUpLogs.Console.Tests.Helper
+namespace CleanUpLogs.Console.Helper.Tests
 {
   class StubFileExtensionManager : IExtensionManager
   {

@@ -12,9 +12,9 @@ namespace CleanUpLogs.Console.BusinessLogic
 
     public CleanUpLogsLogic() { }
 
-    public void ReadContentOfFile(string path)
+    public string[] ReadContentOfFile(string path)
     {
-      Lines = FileHelper.ReadLines(path);
+      return FileHelper.ReadLines(path);
     }
 
     public string[] AlterLines(string[] lines)

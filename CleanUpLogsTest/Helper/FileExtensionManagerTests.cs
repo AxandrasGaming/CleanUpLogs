@@ -1,7 +1,7 @@
 ﻿using CleanUpLogs.Console.Helper;
 using NUnit.Framework;
 
-namespace CleanUpLogs.Console.Tests.Helper
+namespace CleanUpLogs.Console.Helper.Tests
 {
   class FileExtensionManagerTests
   {

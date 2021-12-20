@@ -38,19 +38,25 @@ namespace CleanUpLogs.Console
     {
       if (_args == null) return;
       InitializeFlagCollection();
-      if (FlagCollectionHasValidFlags()) return;
+      if (!FlagCollectionHasValidFlags()) return;
 
-      string path = FlagCollection[Flags.SourcePath];
-      if (!_fileExtensionManager.IsValidPath(path)) return;
+      if (!FlagCollection.TryGetValue(Flags.SourcePath, out string sourcePath)) return;
+      if (!_fileExtensionManager.IsValidPath(sourcePath)) return;
 
-      _cleanUpLogsLogic.ReadContentOfFile(path);
+      string[] readLines = _cleanUpLogsLogic.ReadContentOfFile(sourcePath);
+      if (readLines == null) return;
+
+      string[] alteredLines = _cleanUpLogsLogic.AlterLines(readLines);
+
+      if (!FlagCollection.TryGetValue(Flags.DestinationPath, out string destinationPath)) return;
+      _cleanUpLogsLogic.WriteContentToFiles(destinationPath, alteredLines);
+
     }
 
     private bool FlagCollectionHasValidFlags()
     {
-      return FlagCollection.Keys.Count <= 0
-        || FlagCollection.ContainsKey(Flags.None)
-        || FlagCollection.ContainsKey(Flags.Default);
+      return FlagCollection.Keys.Count > 0
+        && FlagCollection.ContainsKey(Flags.SourcePath);
     }
 
     private void InitializeFlagCollection()
@@ -75,11 +81,13 @@ namespace CleanUpLogs.Console
 
     private Flags GetKeyFromString(string key)
     {
-      string pattern = @"[-]{1}[fF]{1}";
+      string pattern = @"[-]{1}[fFdD]{1}";
       Regex reg = new Regex(pattern);
       if (reg.IsMatch(key))
         switch (key)
         {
+          case "-d":
+          case "-D": return Flags.DestinationPath;
           case "-f":
           case "-F": return Flags.SourcePath;
           default: return Flags.Default;
