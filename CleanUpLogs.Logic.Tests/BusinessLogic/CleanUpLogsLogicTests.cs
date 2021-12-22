@@ -9,9 +9,7 @@ namespace CleanUpLogs.Logic.Tests
     [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log")]
     public void ReadContentOfFile_True(string path)
     {
-      _cull.ReadContentOfFile(path);
-
-      string[] lines = _cull.Lines;
+      string[] lines = _cull.ReadContentOfFile(path);
 
       Assert.AreEqual
       (
@@ -28,11 +26,10 @@ namespace CleanUpLogs.Logic.Tests
     public void AlterLines_Delete1bANDKMultipleSpecificChar_True(string path, string expected)
     {
       // \\b\\u001b[K
-      _cull.ReadContentOfFile(path);
 
-      string[] lines = _cull.Lines;
-      string[] resultArray = _cull.AlterLines(lines);
-      string result = resultArray.FirstOrDefault(_ => _ == (expected));
+      string[] lines = _cull.ReadContentOfFile(path);
+      lines = _cull.AlterLines(lines);
+      string result = lines.FirstOrDefault(_ => _ == (expected));
       StringAssert.AreEqualIgnoringCase(expected, result);
     }
 
@@ -41,11 +38,9 @@ namespace CleanUpLogs.Logic.Tests
     {
       // From \u001b to \a + ~
 
-      _cull.ReadContentOfFile(path);
-
-      string[] lines = _cull.Lines;
-      string[] resultArray = _cull.AlterLines(lines);
-      string result = resultArray.FirstOrDefault(_ => _ == (expected));
+      string[] lines = _cull.ReadContentOfFile(path);
+      lines = _cull.AlterLines(lines);
+      string result = lines.FirstOrDefault(_ => _ == (expected));
       StringAssert.AreEqualIgnoringCase(expected, result);
     }
 
@@ -54,26 +49,22 @@ namespace CleanUpLogs.Logic.Tests
     {
       // From \u001b to \a - ~
 
-      _cull.ReadContentOfFile(path);
-
-      string[] lines = _cull.Lines;
-      string[] resultArray = _cull.AlterLines(lines);
-      string result = resultArray.FirstOrDefault(_ => _ == (expected));
+      string[] lines = _cull.ReadContentOfFile(path);
+      lines = _cull.AlterLines(lines);
+      string result = lines.FirstOrDefault(_ => _ == (expected));
       StringAssert.AreEqualIgnoringCase(expected, result);
     }
 
-    [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log", "[kurs@localhost ~]$ sudo su -", 2)]
-    [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log", "[root@localhost ~]# # ls -la", 4)]
-    [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log", "[root@server1 etc]# ls -la", 43)]
-    public void AlterLines_Delete1BANDAWithAndWithoutTildeMultipleLineAtBeginnings_True(string path, string expected, int linePos)
+    [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log", "[kurs@localhost ~]$ sudo su -")]
+    [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log", "[root@localhost ~]# # ls -la")]
+    [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log", "[root@server1 etc]# ls -la")]
+    public void AlterLines_Delete1BANDAWithAndWithoutTildeMultipleLineAtBeginnings_True(string path, string expected)
     {
       // From \u001b to ~ +/- \a
 
-      _cull.ReadContentOfFile(path);
-
-      string[] lines = _cull.Lines;
-      string[] resultArray = _cull.AlterLines(lines);
-      string result = resultArray.FirstOrDefault(_ => _ == expected);
+      string[] lines = _cull.ReadContentOfFile(path);
+      lines = _cull.AlterLines(lines);
+      string result = lines.FirstOrDefault(_ => _ == expected);
       StringAssert.AreEqualIgnoringCase(expected, result);
     }
 
@@ -81,11 +72,11 @@ namespace CleanUpLogs.Logic.Tests
     public void AlterLines_DeleteBackSpaceAtBeginning_True(string path, string expected)
     {
       // \\u001b\\[K
-      _cull.ReadContentOfFile(path);
+      
 
-      string[] lines = _cull.Lines;
-      string[] resultArray = _cull.AlterLines(lines);
-      string result = resultArray.FirstOrDefault(_ => _ == expected);
+      string[] lines = _cull.ReadContentOfFile(path);
+      lines = _cull.AlterLines(lines);
+      string result = lines.FirstOrDefault(_ => _ == expected);
       StringAssert.AreEqualIgnoringCase(expected, result);
     }
 
@@ -93,11 +84,9 @@ namespace CleanUpLogs.Logic.Tests
     public void AlterLines_Delete01AND0mBeginning_True(string path, string expected)
     {
       // [01 + [0m
-      _cull.ReadContentOfFile(path);
-
-      string[] lines = _cull.Lines;
-      string[] resultArray = _cull.AlterLines(lines);
-      string result = resultArray.FirstOrDefault(_ => _ == (expected));
+      string[] lines = _cull.ReadContentOfFile(path);
+      lines = _cull.AlterLines(lines);
+      string result = lines.FirstOrDefault(_ => _ == (expected));
       StringAssert.AreEqualIgnoringCase(expected, result);
     }
 
@@ -105,11 +94,11 @@ namespace CleanUpLogs.Logic.Tests
     public void AlterLines_DeleteBackSpaceCharacter_True(string path)
     {
       // \b
-      _cull.ReadContentOfFile(path);
+
       string expected = "[root@server1 etc]# u\u001b[1P";
-      string[] lines = _cull.Lines;
-      string[] resultArray = _cull.AlterLines(lines);
-      string result = resultArray.FirstOrDefault(_ => _ == (expected));
+      string[] lines = _cull.ReadContentOfFile(path);
+      lines = _cull.AlterLines(lines);
+      string result = lines.FirstOrDefault(_ => _ == (expected));
       StringAssert.AreEqualIgnoringCase(expected, result);
     }
 

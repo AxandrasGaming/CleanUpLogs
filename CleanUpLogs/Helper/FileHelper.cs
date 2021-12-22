@@ -7,9 +7,16 @@ namespace CleanUpLogs.Console.Helper
     public static string[] ReadLines(string path)
     {
       if (string.IsNullOrEmpty(path))
-        return null;
-
-      return System.IO.File.ReadAllLines(path);
+        return new string[] { };
+      try
+      {
+        return System.IO.File.ReadAllLines(path);
+      }
+      catch (Exception e)
+      {
+        System.Console.WriteLine(e.Message);
+      }
+      return new string[] { };
     }
 
     public static bool WriteLines(string path, string[] text)

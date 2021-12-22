@@ -48,9 +48,9 @@ namespace CleanUpLogs.Console
 
       string[] alteredLines = _cleanUpLogsLogic.AlterLines(readLines);
 
-      if (!FlagCollection.TryGetValue(Flags.DestinationPath, out string destinationPath)) return;
-      _cleanUpLogsLogic.WriteContentToFiles(destinationPath, alteredLines);
-
+      //if (!FlagCollection.TryGetValue(Flags.DestinationPath, out string destinationPath)) return;
+      //_cleanUpLogsLogic.WriteContentToFiles(destinationPath, alteredLines);
+      System.Console.WriteLine("Fertig mit der Bearbeitung.");
     }
 
     private bool FlagCollectionHasValidFlags()
