@@ -113,7 +113,7 @@ namespace CleanUpLogs.Logic.Tests
     [TestCase(@"..\netcoreapp3.1\Resources\testdatei_IST.log", new string[] { "This is a test" })]
     public void WriteLines_WriteALineToFile_True(string path, string[] lines)
     {
-      bool result = _cull.WriteContentToFiles(path, lines);
+      bool result = _cull.WriteContentToFile(path, lines);
 
       Assert.IsTrue(result);
     }
@@ -121,7 +121,7 @@ namespace CleanUpLogs.Logic.Tests
     [TestCase(@"..\netcoreapp3.1\Resources\testdatei_IST.log", new string[] { "This is a test", "Cadra is a Schlawiner", "GrinZ3 ist toll" })]
     public void WriteLines_WriteMultipleLinesToFile_True(string path, string[] lines)
     {
-      bool result = _cull.WriteContentToFiles(path, lines);
+      bool result = _cull.WriteContentToFile(path, lines);
 
       Assert.IsTrue(result);
     }
@@ -130,7 +130,7 @@ namespace CleanUpLogs.Logic.Tests
     [TestCase("", new string[] { "This is a test", "Cadra is a Schlawiner", "GrinZ3 ist toll" })]
     public void WriteLines_WriteMultipleLinesToFile_False(string path, string[] lines)
     {
-      bool result = _cull.WriteContentToFiles(path, lines);
+      bool result = _cull.WriteContentToFile(path, lines);
 
       Assert.IsFalse(result);
     }

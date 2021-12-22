@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace CleanUpLogs.Console.BusinessLogic
 {
-  public class CleanUpLogsLogic
+  public class CleanUpLogsLogic : ICleanUpLogsLogic
   {
     public CleanUpLogsLogic() { }
 
@@ -12,7 +12,7 @@ namespace CleanUpLogs.Console.BusinessLogic
     {
       return FileHelper.ReadLines(path);
     }
-
+    
     public string[] AlterLines(string[] lines)
     {
       for (int posLines = 0; posLines < lines.Length; posLines++)
@@ -51,7 +51,7 @@ namespace CleanUpLogs.Console.BusinessLogic
       {
         stringToDelete = GetStringToDelete(line, deleteStringFlag, startPos);
       }
-      if (IsValidStartPositon(startPos) && deleteStringFlag.Contains("\u001b[K"))
+      else if (IsValidStartPositon(startPos) && deleteStringFlag.Contains("\u001b[K"))
       {
         stringToDelete = deleteStringFlag;
       }
@@ -136,7 +136,7 @@ namespace CleanUpLogs.Console.BusinessLogic
         || line.Contains("\u001b[C");
     }
 
-    public bool WriteContentToFiles(string path, string[] lines)
+    public bool WriteContentToFile(string path, string[] lines)
     {
       if (string.IsNullOrEmpty(path)) return false;
       if (lines == null) return false;

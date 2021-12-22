@@ -6,49 +6,44 @@ namespace CleanUpLogs.Console.Tests
   {
     private CleanUpLogsConsole _culc;
     #region ParamterTests
-    [TestCase(new string[] { "Hallo", "Dieter" }, new string[] { "Hallo", "Dieter" })]
-    [TestCase(new string[] { }, new string[] { })]
-    [TestCase(null, null)]
-    public void Get_CleanUpLogsConsole_WithParameter_Test(string[] args, string[] expected)
+    [TestCase(new string[] { "Hallo", "Dieter", "-o" }, Flags.None)]
+    [TestCase(new string[] { "Hallo", "Dieter", "-o=k" }, Flags.None)]
+    [TestCase(new string[] { "Hallo", "Dieter", "-s" }, Flags.SourcePath)]
+    [TestCase(new string[] { "Hallo", "Dieter", "-S" }, Flags.SourcePath)]
+    [TestCase(new string[] { "Hallo", "Dieter", "-d" }, Flags.DestinationPath)]
+    [TestCase(new string[] { "Hallo", "Dieter", "-D" }, Flags.DestinationPath)]
+    public void CleanUpLogsConsole_WithParameterWithSpecificFlag_False(string[] args, Flags flag)
     {
       _culc = new CleanUpLogsConsole(args);
-
-      Assert.AreEqual(expected, _culc.Args);
+      Assert.IsFalse(_culc.FlagCollection.ContainsKey(flag));
     }
 
-    [Test]
-    public void Get_CleanUpLogsConsole_WithParameterOnSpecificPosition_Test()
+    [TestCase(new string[] { "Hallo", "Dieter", "-s=a " }, Flags.SourcePath)]
+    [TestCase(new string[] { "Hallo", "Dieter", "-S=cb" }, Flags.SourcePath)]
+    [TestCase(new string[] { "Hallo", "Dieter", "-d=de " }, Flags.DestinationPath)]
+    [TestCase(new string[] { "Hallo", "Dieter", "-D=f " }, Flags.DestinationPath)]
+    public void CleanUpLogsConsole_WithParameterWithSpecificFlag_True(string[] args, Flags flag)
     {
-      _culc = new CleanUpLogsConsole(new string[] { "Hallo", "Dieter", "-o" });
-
-      Assert.AreEqual("-o", _culc.Args[2]);
-    }
-
-    [Test]
-    public void Get_CleanUpLogsConsole_WithParameterWithSpecificFlag_Test()
-    {
-      _culc = new CleanUpLogsConsole(new string[] { "Hallo", "Dieter", "-o=k" });
-
-      Assert.IsTrue(_culc.FlagCollection.ContainsKey(Flags.None));
+      _culc = new CleanUpLogsConsole(args);
+      Assert.IsTrue(_culc.FlagCollection.ContainsKey(flag));
     }
 
     [Test]
     public void CleanUpLogsConsole_WithParameterPathCorrectFormat_Test()
     {
-      _culc = new CleanUpLogsConsole(new string[] { "-f=C:\\path", "Dieter", "-o=k" });
+      _culc = new CleanUpLogsConsole(new string[] { "-s=C:\\path", "Dieter", "-o=k" });
 
       Assert.AreEqual("C:\\path", _culc.FlagCollection.ContainsKey(Flags.SourcePath) ? _culc.FlagCollection[Flags.SourcePath] : string.Empty);
     }
 
-    [TestCase(new string[] { @"-f=E:\path", "Dieter", @"-d=E:\path\output" }, @"E:\path", Flags.SourcePath)]
-    [TestCase(new string[] { @"-f=E:\path", "Dieter", @"-d=E:\path\output" }, @"E:\path\output", Flags.DestinationPath)]
+    [TestCase(new string[] { @"-s=E:\path", "Dieter", @"-d=E:\path\output" }, @"E:\path", Flags.SourcePath)]
+    [TestCase(new string[] { @"-s=E:\path", "Dieter", @"-d=E:\path\output" }, @"E:\path\output", Flags.DestinationPath)]
     public void CleanUpLogsConsole_WithMultiplePathParameters_Test(string[] paramArray, string expected, Flags flag)
     {
       _culc = new CleanUpLogsConsole(paramArray);
 
       StringAssert.AreEqualIgnoringCase(expected, _culc.FlagCollection.ContainsKey(flag) ? _culc.FlagCollection[flag] : string.Empty);
     }
-
     #endregion 
 
   }

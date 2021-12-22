@@ -8,36 +8,31 @@ namespace CleanUpLogs.Console
   public class CleanUpLogsConsole
   {
     #region Fields
-    private string[] _args = null;
     private Dictionary<Flags, string> _flags = new Dictionary<Flags, string>();
-    private CleanUpLogsLogic _cleanUpLogsLogic = new CleanUpLogsLogic();
+    private ICleanUpLogsLogic _cleanUpLogsLogic = new CleanUpLogsLogic();
     private IExtensionManager _fileExtensionManager;
     #endregion
 
     #region Properties
-    public string[] Args { get => _args; set => _args = value; }
     public Dictionary<Flags, string> FlagCollection { get => _flags; set => _flags = value; }
-
-    public CleanUpLogsLogic CleanUpLogsLogic { get => _cleanUpLogsLogic; set => _cleanUpLogsLogic = value; }
     #endregion
 
     #region Constructors
     public CleanUpLogsConsole(string[] args)
     {
-      Args = args;
       ExtensionManagerFactory emf = new ExtensionManagerFactory();
       _fileExtensionManager = emf.Create();
-      StartLogCleaning();
+      StartLogCleaning(args);
     }
 
     public CleanUpLogsConsole() { }
     #endregion
 
     #region Methods
-    private void StartLogCleaning()
+    private void StartLogCleaning(string[] args)
     {
-      if (_args == null) return;
-      InitializeFlagCollection();
+      if (args == null) return;
+      InitializeFlagCollection(args);
       if (!FlagCollectionHasValidFlags()) return;
 
       if (!FlagCollection.TryGetValue(Flags.SourcePath, out string sourcePath)) return;
@@ -48,8 +43,8 @@ namespace CleanUpLogs.Console
 
       string[] alteredLines = _cleanUpLogsLogic.AlterLines(readLines);
 
-      //if (!FlagCollection.TryGetValue(Flags.DestinationPath, out string destinationPath)) return;
-      //_cleanUpLogsLogic.WriteContentToFiles(destinationPath, alteredLines);
+      if (!FlagCollection.TryGetValue(Flags.DestinationPath, out string destinationPath)) return;
+      _cleanUpLogsLogic.WriteContentToFile(destinationPath, alteredLines);
       System.Console.WriteLine("Fertig mit der Bearbeitung.");
     }
 
@@ -59,9 +54,9 @@ namespace CleanUpLogs.Console
         && FlagCollection.ContainsKey(Flags.SourcePath);
     }
 
-    private void InitializeFlagCollection()
+    private void InitializeFlagCollection(string[] args)
     {
-      foreach (string arg in Args)
+      foreach (string arg in args)
       {
         char[] sep = new char[] { '=' };
         string[] flag = arg.Split(sep);
@@ -73,7 +68,7 @@ namespace CleanUpLogs.Console
     private void AddFlagToDictionary(string[] flag)
     {
       Flags key = GetKeyFromString(flag[0]);
-      if (key == Flags.Default) return;
+      if (key == Flags.None) return;
 
       string value = flag[1];
       FlagCollection.TryAdd(key, value);
@@ -81,16 +76,16 @@ namespace CleanUpLogs.Console
 
     private Flags GetKeyFromString(string key)
     {
-      string pattern = @"[-]{1}[fFdD]{1}";
+      string pattern = @"[-]{1}[sSdD]{1}";
       Regex reg = new Regex(pattern);
       if (reg.IsMatch(key))
         switch (key)
         {
           case "-d":
           case "-D": return Flags.DestinationPath;
-          case "-f":
-          case "-F": return Flags.SourcePath;
-          default: return Flags.Default;
+          case "-s":
+          case "-S": return Flags.SourcePath;
+          default: return Flags.None;
         }
       return Flags.None;
     }

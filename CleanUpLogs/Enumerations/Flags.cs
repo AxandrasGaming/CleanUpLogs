@@ -4,7 +4,6 @@
   {
     None,
     SourcePath,
-    DestinationPath,
-    Default
+    DestinationPath
   }
 }

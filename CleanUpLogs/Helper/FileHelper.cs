@@ -27,9 +27,9 @@ namespace CleanUpLogs.Console.Helper
       {
         System.IO.File.WriteAllLines(path, text);
       }
-      catch (Exception)
+      catch (Exception e)
       {
-        return false;
+        System.Console.WriteLine(e.Message);
       }
 
       return true;

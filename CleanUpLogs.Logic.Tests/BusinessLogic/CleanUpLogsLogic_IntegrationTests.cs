@@ -9,11 +9,11 @@ namespace CleanUpLogs.Logic.Tests
 
     [TestCase(@"..\netcoreapp3.1\Resources\testdatei.log", @"..\netcoreapp3.1\Resources\testdatei_SOLL.log", @"..\netcoreapp3.1\Resources\testdatei_IST.log")]
     [Ignore("Slow test just for Integration!")]
-    public void Integration_WholeCRUDProcess_True(string pathSource, string pathExpected, string pathResult)
+    public void Integration_WholeUpdateProcess_True(string pathSource, string pathExpected, string pathResult)
     {
       string[] lines = _cull.ReadContentOfFile(pathSource);
       lines = _cull.AlterLines(lines);
-      bool result = _cull.WriteContentToFiles(pathResult, lines);
+      bool result = _cull.WriteContentToFile(pathResult, lines);
       if (result)
       {
         Stream streamExpected = new FileStream(pathExpected, FileMode.Open);

@@ -5,7 +5,7 @@ namespace CleanUpLogs.Logic.Tests
 {
   public abstract class CleanUpLogsLogicTestsBase
   {
-    protected CleanUpLogsLogic _cull;
+    protected ICleanUpLogsLogic _cull;
 
     [SetUp]
     public void Setup()
