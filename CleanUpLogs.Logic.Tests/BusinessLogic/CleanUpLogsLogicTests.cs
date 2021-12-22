@@ -1,5 +1,7 @@
-﻿using NUnit.Framework;
+﻿using CleanUpLogs.Console.BusinessLogic;
+using NUnit.Framework;
 using System.Linq;
+using System.Reflection;
 
 namespace CleanUpLogs.Logic.Tests
 {
@@ -26,7 +28,6 @@ namespace CleanUpLogs.Logic.Tests
     public void AlterLines_Delete1bANDKMultipleSpecificChar_True(string path, string expected)
     {
       // \\b\\u001b[K
-
       string[] lines = _cull.ReadContentOfFile(path);
       lines = _cull.AlterLines(lines);
       string result = lines.FirstOrDefault(_ => _ == (expected));

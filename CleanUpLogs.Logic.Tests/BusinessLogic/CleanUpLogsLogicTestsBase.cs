@@ -1,16 +1,18 @@
 ﻿using CleanUpLogs.Console.BusinessLogic;
+using CleanUpLogs.Console.Helper;
 using NUnit.Framework;
 
 namespace CleanUpLogs.Logic.Tests
 {
   public abstract class CleanUpLogsLogicTestsBase
   {
-    protected ICleanUpLogsLogic _cull;
+    protected CleanUpLogsLogic _cull;
 
     [SetUp]
     public void Setup()
     {
-      _cull = new CleanUpLogsLogic();
+      ExtensionManagerFactory emf = new ExtensionManagerFactory();
+      _cull = new CleanUpLogsLogic(emf.Create());
     }
 
     [TearDown]

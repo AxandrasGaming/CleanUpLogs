@@ -9,8 +9,8 @@ namespace CleanUpLogs.Console
   {
     #region Fields
     private Dictionary<Flags, string> _flags = new Dictionary<Flags, string>();
-    private ICleanUpLogsLogic _cleanUpLogsLogic = new CleanUpLogsLogic();
-    private IExtensionManager _fileExtensionManager;
+    private CleanUpLogsLogic _cleanUpLogsLogic = new CleanUpLogsLogic();
+
     #endregion
 
     #region Properties
@@ -20,33 +20,20 @@ namespace CleanUpLogs.Console
     #region Constructors
     public CleanUpLogsConsole(string[] args)
     {
-      ExtensionManagerFactory emf = new ExtensionManagerFactory();
-      _fileExtensionManager = emf.Create();
-      StartLogCleaning(args);
+
+      if (args == null) return;
+      InitializeFlagCollection(args);
+      if (!FlagCollectionHasValidFlags()) return;
+      FlagCollection.TryGetValue(Flags.SourcePath, out string sourcePath);
+      FlagCollection.TryGetValue(Flags.DestinationPath, out string destinationPath);
+      _cleanUpLogsLogic.StartLogCleaning(sourcePath, destinationPath);
     }
 
     public CleanUpLogsConsole() { }
     #endregion
 
     #region Methods
-    private void StartLogCleaning(string[] args)
-    {
-      if (args == null) return;
-      InitializeFlagCollection(args);
-      if (!FlagCollectionHasValidFlags()) return;
 
-      if (!FlagCollection.TryGetValue(Flags.SourcePath, out string sourcePath)) return;
-      if (!_fileExtensionManager.IsValidPath(sourcePath)) return;
-
-      string[] readLines = _cleanUpLogsLogic.ReadContentOfFile(sourcePath);
-      if (readLines == null) return;
-
-      string[] alteredLines = _cleanUpLogsLogic.AlterLines(readLines);
-
-      if (!FlagCollection.TryGetValue(Flags.DestinationPath, out string destinationPath)) return;
-      _cleanUpLogsLogic.WriteContentToFile(destinationPath, alteredLines);
-      System.Console.WriteLine("Fertig mit der Bearbeitung.");
-    }
 
     private bool FlagCollectionHasValidFlags()
     {

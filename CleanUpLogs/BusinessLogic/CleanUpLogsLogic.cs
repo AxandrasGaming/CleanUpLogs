@@ -1,18 +1,54 @@
 ﻿using CleanUpLogs.Console.Helper;
 using System;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
+[assembly: InternalsVisibleTo("CleanUpLogs.Logic.Tests")]
 namespace CleanUpLogs.Console.BusinessLogic
 {
-  public class CleanUpLogsLogic : ICleanUpLogsLogic
+  public class CleanUpLogsLogic
   {
-    public CleanUpLogsLogic() { }
+    private IExtensionManager _fileExtensionManager;
+
+    public CleanUpLogsLogic(IExtensionManager fileExtensionManager)
+    {
+      _fileExtensionManager = fileExtensionManager;
+    }
+
+    public CleanUpLogsLogic()
+    {
+      ExtensionManagerFactory emf = new ExtensionManagerFactory();
+      _fileExtensionManager = emf.Create();
+    }
+
+    public void StartLogCleaning(string sourcePath, string destinationPath)
+    {
+      System.Console.WriteLine("Überprüfe Quellpfadangabe.");
+      if (!_fileExtensionManager.IsValidPath(sourcePath))
+      {
+        System.Console.WriteLine("Quellpfadangabe ist fehlerhaft.");
+        return;
+      }
+      System.Console.WriteLine("Lade Quelle.");
+      string[] readLines = ReadContentOfFile(sourcePath);
+      if (readLines == null) return;
+      System.Console.WriteLine("Quelle geladen.");
+      System.Console.WriteLine("Starte die Bearbeitung.");
+      string[] alteredLines = AlterLines(readLines);
+      if (alteredLines == null) return;
+      System.Console.WriteLine("Bearbeitung abgeschlossen.");
+
+      if (!_fileExtensionManager.IsValidPath(destinationPath)) return;
+      System.Console.WriteLine("Speichere zum Ziel.");
+      WriteContentToFile(destinationPath, alteredLines);
+      System.Console.WriteLine("Speichern abgeschlossen.");
+    }
 
     public string[] ReadContentOfFile(string path)
     {
       return FileHelper.ReadLines(path);
     }
-    
+
     public string[] AlterLines(string[] lines)
     {
       for (int posLines = 0; posLines < lines.Length; posLines++)
